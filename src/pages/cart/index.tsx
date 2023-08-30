@@ -3,14 +3,15 @@ import { GlobalContext } from "../../context/GlobalContext";
 import Link from "next/link";
 
 const index = () => {
-  const { setShoppingCartItems, shoppingCartItems } = useContext(GlobalContext);
+  const { setShoppingCartItems, shoppingCartItems, role } =
+    useContext(GlobalContext);
 
   return (
     <>
       {/* wrapper */}
       <div className="container grid grid-cols-12 items-start gap-6 pt-4 pb-16">
         {/* sidebar */}
-        <div className="col-span-3">
+        {/* <div className="col-span-3">
           <div className="px-4 py-3 shadow flex items-center gap-4">
             <div className="flex-shrink-0">
               <img
@@ -120,11 +121,11 @@ const index = () => {
               </a>
             </div>
           </div>
-        </div>
+        </div> */}
         {/* ./sidebar */}
         {/* wishlist */}
         {shoppingCartItems.length === 0 ? (
-          <div className="col-span-9 space-y-4">
+          <div className="col-span-12 space-y-4">
             <div className="flex items-center justify-center border gap-6 p-4 border-gray-200 rounded">
               <div className="w-28">
                 {/* <img
@@ -141,7 +142,7 @@ const index = () => {
             </div>
           </div>
         ) : (
-          <div className="col-span-9 space-y-4">
+          <div className="col-span-12 space-y-4">
             {shoppingCartItems.map((item) => {
               return (
                 <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
@@ -175,21 +176,11 @@ const index = () => {
                       Amount: {item.amount}
                     </p>
                     <p className="text-gray-500 text-sm">
-                      Unit Price: ${" "}
-                      {localStorage.getItem("role") === null
-                        ? item.furniter.retail
-                        : item.furniter[
-                            localStorage.getItem("role").toLowerCase()
-                          ]}{" "}
+                      Unit Price: $ {item.furniter[role.toLowerCase()]}{" "}
                     </p>
                   </div>
                   <div className="text-primary text-lg font-semibold">
-                    ${" "}
-                    {localStorage.getItem("role") === null
-                      ? item.furniter.retail * item.amount
-                      : item.furniter[
-                          localStorage.getItem("role").toLowerCase()
-                        ] * item.amount}{" "}
+                    $ {item.furniter[role.toLowerCase()] * item.amount}{" "}
                   </div>
                   {/* <a
                   href="#"

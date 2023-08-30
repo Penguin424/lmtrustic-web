@@ -1,10 +1,13 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { ILoginDB } from "../interfaces/login";
 import { useRouter } from "next/router";
+import { Button } from "antd";
+import { GlobalContext } from "../context/GlobalContext";
 
 const Register = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataForm, setDataForm] = useState({
     name: "",
     email: "",
@@ -14,10 +17,12 @@ const Register = () => {
   });
 
   const router = useRouter();
+  const { setRole } = useContext(GlobalContext);
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
+      setIsLoading(true);
 
       if (dataForm.password !== dataForm.confirmPassword) {
         return await Swal.fire({
@@ -46,6 +51,7 @@ const Register = () => {
       const resgisterDB = await responseRegister.json();
 
       if (resgisterDB.error) {
+        setIsLoading(false);
         return await Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -65,8 +71,13 @@ const Register = () => {
       localStorage.setItem("user", JSON.stringify(dataRegisterSuccess.user));
       localStorage.setItem("role", dataRegisterSuccess.user.role.name);
 
+      setRole(dataRegisterSuccess.user.role.name);
+
+      setIsLoading(false);
+
       router.push("/");
     } catch (error) {
+      setIsLoading(false);
       return Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -180,12 +191,13 @@ const Register = () => {
               </div>
             </div>
             <div className="mt-4">
-              <button
-                type="submit"
-                className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+              <Button
+                htmlType="submit"
+                loading={isLoading}
+                className="flex items-center justify-center  w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
               >
                 create account
-              </button>
+              </Button>
             </div>
           </form>
           {/* login with */}

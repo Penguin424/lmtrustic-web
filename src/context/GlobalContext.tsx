@@ -5,17 +5,22 @@ import NavBar from "../components/navbar";
 interface IGlobalContext {
   shoppingCartItems: ICartShopItem[];
   setShoppingCartItems: React.Dispatch<React.SetStateAction<ICartShopItem[]>>;
+  role: string;
+  setRole: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const GlobalContext = createContext({
   shoppingCartItems: [],
   setShoppingCartItems: () => {},
+  role: "retail",
+  setRole: () => {},
 } as IGlobalContext);
 
 export const GlobalContextProvider = ({ children }) => {
   const [shoppingCartItems, setShoppingCartItems] = useState<ICartShopItem[]>(
     []
   );
+  const [role, setRole] = useState<string>("retail");
 
   const handleGetRole = async () => {
     let token = localStorage.getItem("token");
@@ -37,7 +42,9 @@ export const GlobalContextProvider = ({ children }) => {
         };
       } = await dataMe.json();
 
-      localStorage.setItem("role", me.role.name);
+      setRole(me.role.name);
+    } else {
+      setRole("retail");
     }
   };
 
@@ -50,6 +57,8 @@ export const GlobalContextProvider = ({ children }) => {
       value={{
         shoppingCartItems: shoppingCartItems,
         setShoppingCartItems: setShoppingCartItems,
+        role: role,
+        setRole: setRole,
       }}
     >
       <NavBar>{children}</NavBar>

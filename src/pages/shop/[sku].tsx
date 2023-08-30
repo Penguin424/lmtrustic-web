@@ -11,7 +11,8 @@ const FurnitureDetail = () => {
   const [furnitures, setFurnitures] = React.useState<IFurnitureDB[]>([]);
 
   const params = useRouter();
-  const { setShoppingCartItems, shoppingCartItems } = useContext(GlobalContext);
+  const { setShoppingCartItems, shoppingCartItems, role } =
+    useContext(GlobalContext);
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
@@ -126,10 +127,7 @@ const FurnitureDetail = () => {
           </div>
           <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
             <p className="text-xl text-primary font-semibold">
-              ${" "}
-              {localStorage.getItem("role") === null
-                ? furniture.retail
-                : furniture[localStorage.getItem("role").toLowerCase()]}
+              $ {furniture[role]}
             </p>
             {/* <p className="text-base text-gray-400 line-through">$55.00</p> */}
           </div>

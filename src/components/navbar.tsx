@@ -1,17 +1,37 @@
-import React, { useContext } from "react";
-import logonegro from "../assets/images/logo-negro.png";
+import React, { useContext, useEffect, useState } from "react";
+import logonegro from "../assets/images/logo-azul.png";
 import Link from "next/link";
 import { GlobalContext } from "../context/GlobalContext";
+import { ICategoryDB } from "../interfaces/category";
 
 const NavBar = ({ children }) => {
+  const [categories, setCategories] = useState<ICategoryDB[]>([]);
+
   const { shoppingCartItems } = useContext(GlobalContext);
+
+  useEffect(() => {
+    handleGetCategories();
+  }, []);
+
+  const handleGetCategories = async () => {
+    const reponseCatDB = await fetch(
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/categories?populate[0]=image",
+      {
+        method: "GET",
+      }
+    );
+
+    const categoriesDB: ICategoryDB[] = await (await reponseCatDB.json()).data;
+
+    setCategories(categoriesDB);
+  };
 
   return (
     <>
       <header className="py-4 shadow-sm bg-white">
         <div className="container flex items-center justify-between">
           <a href="index.html">
-            <img src={logonegro.src} alt="Logo" className="w-20" />
+            <img src={logonegro.src} alt="Logo" className="w-44" />
           </a>
 
           <div className="w-full max-w-xl relative flex">
@@ -38,8 +58,11 @@ const NavBar = ({ children }) => {
               {/* <div className="text-2xl">
                 <i className="fa-regular fa-heart"></i>
               </div> */}
+              <div className="text-2xl">
+                <i className="fa-solid fa-bag-shopping"></i>
+              </div>
               <div className="text-xs leading-3">Cart</div>
-              <div className="absolute -right-0 -top-6 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
+              <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
                 {shoppingCartItems
                   .map((item) => item.amount)
                   .reduce((a, b) => a + b, 0)}
@@ -67,73 +90,25 @@ const NavBar = ({ children }) => {
               All Categories
             </span>
 
-            <div className="absolute w-full left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed opacity-0 group-hover:opacity-100 transition duration-300 invisible group-hover:visible">
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/sofa.svg"
-                  alt="sofa"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">Sofa</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/terrace.svg"
-                  alt="terrace"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">Terarce</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/bed.svg"
-                  alt="bed"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">Bed</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/office.svg"
-                  alt="office"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">office</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/outdoor-cafe.svg"
-                  alt="outdoor"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">Outdoor</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
-              >
-                <img
-                  src="assets/images/icons/bed-2.svg"
-                  alt="Mattress"
-                  className="w-5 h-5 object-contain"
-                />
-                <span className="ml-6 text-gray-600 text-sm">Mattress</span>
-              </a>
+            <div className="absolute w-72 left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed opacity-0 group-hover:opacity-100 transition duration-300 invisible group-hover:visible">
+              {categories.map((category) => {
+                return (
+                  <a
+                    href="#"
+                    className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
+                  >
+                    <img
+                      src={category.image[0].url}
+                      alt="sofa"
+                      className="w-5 h-5 object-contain"
+                    />
+                    <span className="ml-6 text-gray-600 text-sm">
+                      {" "}
+                      {category.name}{" "}
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </div>
 

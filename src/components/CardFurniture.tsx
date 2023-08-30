@@ -9,10 +9,11 @@ interface IPropsCardFurniture {
 }
 
 const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
-  const { setShoppingCartItems, shoppingCartItems } = useContext(GlobalContext);
+  const { setShoppingCartItems, shoppingCartItems, role } =
+    useContext(GlobalContext);
 
   return (
-    <div className="bg-white shadow rounded overflow-hidden group">
+    <div className="bg-white shadow rounded overflow-hidden group flex flex-col justify-between">
       <div className="relative">
         <img
           src={furniture.images[furniture.images.length - 1].url}
@@ -37,10 +38,7 @@ const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
         </a>
         <div className="flex items-baseline mb-1 space-x-2">
           <p className="text-xl text-primary font-semibold">
-            $
-            {localStorage.getItem("role") === null
-              ? furniture.retail
-              : furniture[localStorage.getItem("role").toLowerCase()]}
+            ${furniture[role.toLowerCase()]}
           </p>
           {/* <p className="text-sm text-gray-400 line-through">$55.90</p> */}
         </div>
@@ -65,7 +63,7 @@ const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
           <div className="text-xs text-gray-500 ml-3">({furniture.stock})</div>
         </div>
       </div>
-      <div
+      <a
         onClick={() => {
           const isExist = shoppingCartItems.find(
             (item) => item.furniter.id === furniture.id
@@ -118,7 +116,7 @@ const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
         className="block w-full py-1 text-center cursor-pointer text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
       >
         Add to cart
-      </div>
+      </a>
     </div>
   );
 };

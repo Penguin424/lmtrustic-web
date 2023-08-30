@@ -2,9 +2,28 @@ import { useEffect, useState } from "react";
 import { IFurnitureDB } from "../interfaces/inventories";
 import CardFurniture from "../components/CardFurniture";
 import banner1 from "../assets/images/banner1.jpg";
+import llamadas from "../assets/images/llamadas.jpg";
+import dinero from "../assets/images/dinero.jpg";
+import camion from "../assets/images/camion.jpg";
+import oferta from "../assets/images/oferta.jpg";
+import { ICategoryDB } from "../interfaces/category";
 
 export default function Home() {
   const [furnitures, setFurnitures] = useState<IFurnitureDB[]>([]);
+  const [categories, setCategories] = useState<ICategoryDB[]>([]);
+
+  const handleGetCategories = async () => {
+    const reponseCatDB = await fetch(
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/categories?populate[0]=image",
+      {
+        method: "GET",
+      }
+    );
+
+    const categoriesDB: ICategoryDB[] = await (await reponseCatDB.json()).data;
+
+    setCategories(categoriesDB);
+  };
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
@@ -21,16 +40,18 @@ export default function Home() {
 
   useEffect(() => {
     handleGetFurnitures();
+    handleGetCategories();
   }, []);
 
   return (
     <>
       {/* banner */}
-      <div
-        className="bg-cover bg-no-repeat py-60"
+      <img src={banner1.src} alt="banner" className="w-full" />
+      {/* <div
+        className="bg-cover bg-no-repeat py-36"
         style={{ backgroundImage: `url("${banner1.src}")` }}
       >
-        {/* <div className="container absolute top-1">
+        <div className="container absolute top-1">
           <h1 className="text-6xl text-white font-medium mb-4 capitalize">
             best collection for <br />
             home decoration
@@ -49,8 +70,8 @@ export default function Home() {
               Shop Now
             </a>
           </div>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
       {/* ./banner */}
 
       {/* features */}
@@ -58,7 +79,7 @@ export default function Home() {
         <div className="w-10/12 grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto justify-center">
           <div className="border border-primary rounded-sm px-3 py-6 flex justify-center items-center gap-5">
             <img
-              src="assets/images/icons/delivery-van.svg"
+              src={camion.src}
               alt="Delivery"
               className="w-12 h-12 object-contain"
             />
@@ -69,7 +90,7 @@ export default function Home() {
           </div>
           <div className="border border-primary rounded-sm px-3 py-6 flex justify-center items-center gap-5">
             <img
-              src="assets/images/icons/money-back.svg"
+              src={dinero.src}
               alt="Delivery"
               className="w-12 h-12 object-contain"
             />
@@ -80,7 +101,7 @@ export default function Home() {
           </div>
           <div className="border border-primary rounded-sm px-3 py-6 flex justify-center items-center gap-5">
             <img
-              src="assets/images/icons/service-hours.svg"
+              src={llamadas.src}
               alt="Delivery"
               className="w-12 h-12 object-contain"
             />
@@ -98,85 +119,25 @@ export default function Home() {
         <h2 className="text-2xl font-medium text-gray-800 uppercase mb-6">
           shop by category
         </h2>
+
         <div className="grid grid-cols-3 gap-3">
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-1.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Bedroom
-            </a>
-          </div>
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-2.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Mattrass
-            </a>
-          </div>
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-3.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Outdoor
-            </a>
-          </div>
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-4.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Sofa
-            </a>
-          </div>
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-5.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Living Room
-            </a>
-          </div>
-          <div className="relative rounded-sm overflow-hidden group">
-            <img
-              src="assets/images/category/category-6.jpg"
-              alt="category 1"
-              className="w-full"
-            />
-            <a
-              href="#"
-              className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
-            >
-              Kitchen
-            </a>
-          </div>
+          {categories.map((category) => {
+            return (
+              <div className="relative rounded-sm overflow-hidden group">
+                <img
+                  src={category.image[0].url}
+                  alt="category 1"
+                  className="w-full"
+                />
+                <a
+                  href="#"
+                  className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition"
+                >
+                  {category.name}
+                </a>
+              </div>
+            );
+          })}
         </div>
       </div>
       {/* ./categories */}
@@ -197,7 +158,7 @@ export default function Home() {
       {/* ads */}
       <div className="container pb-16">
         <a href="#">
-          <img src="assets/images/offer.jpg" alt="ads" className="w-full" />
+          <img src={oferta.src} alt="ads" className="w-full" />
         </a>
       </div>
       {/* ./ads */}

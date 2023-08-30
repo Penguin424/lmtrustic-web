@@ -1,20 +1,25 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { ILoginDB } from "../interfaces/login";
 import { useRouter } from "next/router";
+import { GlobalContext } from "../context/GlobalContext";
+import { Button } from "antd";
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataForm, setDataForm] = useState({
     email: "",
     password: "",
   });
 
   const router = useRouter();
+  const { setRole } = useContext(GlobalContext);
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
+      setIsLoading(true);
 
       const responseLogin = await fetch(
         "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/auth/local",
@@ -34,6 +39,7 @@ const Login = () => {
       const loginDB = await responseLogin.json();
 
       if (loginDB.error) {
+        setIsLoading(false);
         return await Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -42,12 +48,6 @@ const Login = () => {
       }
 
       dataLoginSuccess = loginDB;
-
-      await Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Login success",
-      });
 
       localStorage.setItem("token", dataLoginSuccess.jwt);
       localStorage.setItem("user", JSON.stringify(dataLoginSuccess.user));
@@ -69,9 +69,19 @@ const Login = () => {
       } = await dataMe.json();
 
       localStorage.setItem("role", me.role.name);
+      setRole(me.role.name);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Login success",
+      });
+
+      setIsLoading(false);
 
       router.push("/");
     } catch (error) {
+      setIsLoading(false);
       return Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -142,12 +152,13 @@ const Login = () => {
               </a>
             </div>
             <div className="mt-4">
-              <button
-                type="submit"
-                className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+              <Button
+                loading={isLoading}
+                htmlType="submit"
+                className="flex items-center justify-center w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
               >
                 Login
-              </button>
+              </Button>
             </div>
           </form>
           {/* login with */}

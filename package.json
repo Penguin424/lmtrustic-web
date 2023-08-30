@@ -8,6 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "@stripe/react-stripe-js": "^2.1.2",
+    "@stripe/stripe-js": "^2.1.0",
+    "antd": "^5.8.5",
     "next": "13.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
