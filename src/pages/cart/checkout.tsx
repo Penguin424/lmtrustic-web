@@ -1,10 +1,20 @@
 "use-client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../context/GlobalContext";
 
 const checkout = () => {
+  const [role, setRole] = useState<string | null>();
+
   const { shoppingCartItems } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (localStorage.getItem("role") !== null) {
+      setRole(localStorage.getItem("role"));
+    } else {
+      setRole(null);
+    }
+  }, []);
 
   return (
     <>
@@ -149,21 +159,17 @@ const checkout = () => {
                     </h5>
                     <p className="text-sm text-gray-600">
                       Unit price: $
-                      {localStorage.getItem("role") === null
+                      {role === null
                         ? item.furniter.retail
-                        : item.furniter[
-                            localStorage.getItem("role").toLowerCase()
-                          ]}{" "}
+                        : item.furniter[role.toLowerCase()]}{" "}
                     </p>
                   </div>
                   <p className="text-gray-600">x{item.amount}</p>
                   <p className="text-gray-800 font-medium">
                     $
-                    {localStorage.getItem("role") === null
+                    {role === null
                       ? item.furniter.retail * item.amount
-                      : item.furniter[
-                          localStorage.getItem("role").toLowerCase()
-                        ] * item.amount}
+                      : item.furniter[role.toLowerCase()] * item.amount}
                   </p>
                 </div>
               );
@@ -173,16 +179,13 @@ const checkout = () => {
             <p>subtotal</p>
             <p>
               $
-              {localStorage.getItem("role") === null
+              {role === null
                 ? shoppingCartItems
                     .map((item) => item.furniter.retail * item.amount)
                     .reduce((a, b) => a + b, 0)
                 : shoppingCartItems
                     .map(
-                      (item) =>
-                        item.furniter[
-                          localStorage.getItem("role").toLowerCase()
-                        ] * item.amount
+                      (item) => item.furniter[role.toLowerCase()] * item.amount
                     )
                     .reduce((a, b) => a + b, 0)}
             </p>
@@ -195,16 +198,13 @@ const checkout = () => {
             <p className="font-semibold">Total</p>
             <p>
               $
-              {localStorage.getItem("role") === null
+              {role === null
                 ? shoppingCartItems
                     .map((item) => item.furniter.retail * item.amount)
                     .reduce((a, b) => a + b, 0)
                 : shoppingCartItems
                     .map(
-                      (item) =>
-                        item.furniter[
-                          localStorage.getItem("role").toLowerCase()
-                        ] * item.amount
+                      (item) => item.furniter[role.toLowerCase()] * item.amount
                     )
                     .reduce((a, b) => a + b, 0)}
             </p>
