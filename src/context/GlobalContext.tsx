@@ -7,6 +7,8 @@ interface IGlobalContext {
   setShoppingCartItems: React.Dispatch<React.SetStateAction<ICartShopItem[]>>;
   role: string;
   setRole: React.Dispatch<React.SetStateAction<string>>;
+  isLogged: boolean;
+  setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GlobalContext = createContext({
@@ -14,6 +16,8 @@ export const GlobalContext = createContext({
   setShoppingCartItems: () => {},
   role: "retail",
   setRole: () => {},
+  isLogged: false,
+  setIsLogged: () => {},
 } as IGlobalContext);
 
 export const GlobalContextProvider = ({ children }) => {
@@ -21,9 +25,10 @@ export const GlobalContextProvider = ({ children }) => {
     []
   );
   const [role, setRole] = useState<string>("retail");
+  const [isLogged, setIsLogged] = useState<boolean>(false);
 
   const handleGetRole = async () => {
-    let token = localStorage.getItem("token");
+    let token = sessionStorage.getItem("token");
 
     if (token !== null) {
       const dataMe = await fetch(
@@ -31,7 +36,7 @@ export const GlobalContextProvider = ({ children }) => {
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
@@ -43,8 +48,10 @@ export const GlobalContextProvider = ({ children }) => {
       } = await dataMe.json();
 
       setRole(me.role.name);
+      setIsLogged(true);
     } else {
       setRole("retail");
+      setIsLogged(false);
     }
   };
 
@@ -59,6 +66,8 @@ export const GlobalContextProvider = ({ children }) => {
         setShoppingCartItems: setShoppingCartItems,
         role: role,
         setRole: setRole,
+        isLogged: isLogged,
+        setIsLogged: setIsLogged,
       }}
     >
       <NavBar>{children}</NavBar>

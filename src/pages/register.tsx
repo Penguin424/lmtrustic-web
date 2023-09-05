@@ -67,9 +67,9 @@ const Register = () => {
         text: "Register success",
       });
 
-      localStorage.setItem("token", dataRegisterSuccess.jwt);
-      localStorage.setItem("user", JSON.stringify(dataRegisterSuccess.user));
-      localStorage.setItem("role", dataRegisterSuccess.user.role.name);
+      sessionStorage.setItem("token", dataRegisterSuccess.jwt);
+      sessionStorage.setItem("user", JSON.stringify(dataRegisterSuccess.user));
+      sessionStorage.setItem("role", dataRegisterSuccess.user.role.name);
 
       setRole(dataRegisterSuccess.user.role.name);
 

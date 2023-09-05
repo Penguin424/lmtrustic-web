@@ -21,6 +21,15 @@ export interface IFurnitureDB {
   dropship: number;
   ordereded: number;
   images: Image[];
+  categories: Category[];
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
 }
 
 export interface Image {

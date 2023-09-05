@@ -69,7 +69,7 @@ const checkout = () => {
         payment_method: paymentMethod.id,
       });
 
-      const user: User = JSON.parse(localStorage.getItem("user"));
+      const user: User = JSON.parse(sessionStorage.getItem("user"));
 
       const responseOrder = await (
         await (

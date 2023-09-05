@@ -14,7 +14,7 @@ const Login = () => {
   });
 
   const router = useRouter();
-  const { setRole } = useContext(GlobalContext);
+  const { setRole, setIsLogged } = useContext(GlobalContext);
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -49,8 +49,8 @@ const Login = () => {
 
       dataLoginSuccess = loginDB;
 
-      localStorage.setItem("token", dataLoginSuccess.jwt);
-      localStorage.setItem("user", JSON.stringify(dataLoginSuccess.user));
+      sessionStorage.setItem("token", dataLoginSuccess.jwt);
+      sessionStorage.setItem("user", JSON.stringify(dataLoginSuccess.user));
 
       const dataMe = await fetch(
         "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/users/me?populate[0]=role",
@@ -68,7 +68,7 @@ const Login = () => {
         };
       } = await dataMe.json();
 
-      localStorage.setItem("role", me.role.name);
+      sessionStorage.setItem("role", me.role.name);
       setRole(me.role.name);
 
       await Swal.fire({
@@ -78,7 +78,7 @@ const Login = () => {
       });
 
       setIsLoading(false);
-
+      setIsLogged(true);
       router.push("/");
     } catch (error) {
       setIsLoading(false);
@@ -183,12 +183,12 @@ const Login = () => {
             </a>
           </div> */}
           {/* ./login with */}
-          <p className="mt-4 text-center text-gray-600">
+          {/* <p className="mt-4 text-center text-gray-600">
             Don't have account?
             <Link href="/register" className="text-primary">
               Register now
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
       {/* ./login */}

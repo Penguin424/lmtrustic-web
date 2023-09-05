@@ -5,15 +5,17 @@ import Link from "next/link";
 import { GlobalContext } from "../../context/GlobalContext";
 import Swal from "sweetalert2";
 import CardFurniture from "../../components/CardFurniture";
+import { useRouter } from "next/router";
 
 const index = () => {
   const [furnitures, setFurnitures] = React.useState<IFurnitureDB[]>([]);
 
   const { setShoppingCartItems, shoppingCartItems } = useContext(GlobalContext);
+  const router = useRouter();
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
-      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images",
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&populate[1]=categories",
       {
         method: "GET",
       }
@@ -60,9 +62,27 @@ const index = () => {
           </div>
         </div>
         <div className="grid md:grid-cols-3 grid-cols-2 gap-6">
-          {furnitures.map((furniture) => {
-            return <CardFurniture furniture={furniture} key={furniture.id} />;
-          })}
+          {furnitures
+            .filter((furniture) => {
+              const keys = Object.keys(router.query);
+              const cats = furniture.categories.map((cat) => cat.name);
+              let isIncludesArray: boolean[] = [];
+
+              if (keys.length === 0) return true;
+
+              keys.forEach((key) => {
+                if (cats.includes(key)) {
+                  isIncludesArray.push(true);
+                } else {
+                  isIncludesArray.push(false);
+                }
+              });
+
+              return !isIncludesArray.includes(false);
+            })
+            .map((furniture) => {
+              return <CardFurniture furniture={furniture} key={furniture.id} />;
+            })}
         </div>
       </div>
       {/* ./products */}

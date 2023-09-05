@@ -11,7 +11,7 @@ const FurnitureDetail = () => {
   const [furnitures, setFurnitures] = React.useState<IFurnitureDB[]>([]);
 
   const params = useRouter();
-  const { setShoppingCartItems, shoppingCartItems, role } =
+  const { setShoppingCartItems, shoppingCartItems, role, isLogged } =
     useContext(GlobalContext);
 
   const handleGetFurnitures = async () => {
@@ -100,18 +100,20 @@ const FurnitureDetail = () => {
             <div className="text-xs text-gray-500 ml-3">(150 Reviews)</div>
           </div>
           <div className="space-y-2">
-            <p className="text-gray-800 font-semibold space-x-2">
-              <span>Availability: </span>
-              {furniture.stock > 0 ? (
-                <span className="text-green-600">
-                  In Stock {furniture.stock}{" "}
-                </span>
-              ) : (
-                <span className="text-red-600">
-                  Out of Stock {furniture.stock}{" "}
-                </span>
-              )}
-            </p>
+            {isLogged && (
+              <p className="text-gray-800 font-semibold space-x-2">
+                <span>Availability: </span>
+                {furniture.stock > 0 ? (
+                  <span className="text-green-600">
+                    In Stock {furniture.stock}{" "}
+                  </span>
+                ) : (
+                  <span className="text-red-600">
+                    Out of Stock {furniture.stock}{" "}
+                  </span>
+                )}
+              </p>
+            )}
             <p className="space-x-2">
               <span className="text-gray-800 font-semibold">Brand: </span>
               <span className="text-gray-600">Apex</span>
@@ -126,9 +128,11 @@ const FurnitureDetail = () => {
             </p>
           </div>
           <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
-            <p className="text-xl text-primary font-semibold">
-              $ {furniture[role]}
-            </p>
+            {isLogged && (
+              <p className="text-xl text-primary font-semibold">
+                $ {furniture[role]}
+              </p>
+            )}
             {/* <p className="text-base text-gray-400 line-through">$55.00</p> */}
           </div>
           <p className="mt-4 text-gray-600">{furniture.description}</p>
@@ -248,74 +252,78 @@ const FurnitureDetail = () => {
               </div>
             </div>
           </div> */}
-          <div className="mt-4">
-            <h3 className="text-sm text-gray-800 uppercase mb-1">Quantity</h3>
-            <div className="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
-              <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">
-                -
-              </div>
-              <div className="h-8 w-8 text-base flex items-center justify-center">
-                4
-              </div>
-              <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">
-                +
+          {isLogged && (
+            <div className="mt-4">
+              <h3 className="text-sm text-gray-800 uppercase mb-1">Quantity</h3>
+              <div className="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
+                <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">
+                  -
+                </div>
+                <div className="h-8 w-8 text-base flex items-center justify-center">
+                  4
+                </div>
+                <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">
+                  +
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
-            <div
-              onClick={() => {
-                const isExist = shoppingCartItems.find(
-                  (item) => item.furniter.id === furniture.id
-                );
+            {isLogged && (
+              <div
+                onClick={() => {
+                  const isExist = shoppingCartItems.find(
+                    (item) => item.furniter.id === furniture.id
+                  );
 
-                if (isExist) {
-                  if (isExist.furniter.stock < isExist.amount + 1) {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Out of stock",
+                  if (isExist) {
+                    if (isExist.furniter.stock < isExist.amount + 1) {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Out of stock",
+                      });
+                      return;
+                    }
+
+                    setShoppingCartItems((prev) => {
+                      return prev.map((item) => {
+                        if (item.furniter.id === furniture.id) {
+                          return {
+                            ...item,
+                            amount: item.amount + 1,
+                          };
+                        } else {
+                          return item;
+                        }
+                      });
                     });
-                    return;
+                  } else {
+                    if (furniture.stock < 1) {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Out of stock",
+                      });
+                      return;
+                    }
+
+                    setShoppingCartItems((prev) => {
+                      return [
+                        ...prev,
+                        {
+                          furniter: furniture,
+                          amount: 1,
+                        },
+                      ];
+                    });
                   }
-
-                  setShoppingCartItems((prev) => {
-                    return prev.map((item) => {
-                      if (item.furniter.id === furniture.id) {
-                        return {
-                          ...item,
-                          amount: item.amount + 1,
-                        };
-                      } else {
-                        return item;
-                      }
-                    });
-                  });
-                } else {
-                  if (furniture.stock < 1) {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Out of stock",
-                    });
-                    return;
-                  }
-
-                  setShoppingCartItems((prev) => {
-                    return [
-                      ...prev,
-                      {
-                        furniter: furniture,
-                        amount: 1,
-                      },
-                    ];
-                  });
-                }
-              }}
-              className="bg-primary border border-primary cursor-pointer text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
-            >
-              <i className="fa-solid fa-bag-shopping" /> Add to cart
-            </div>
+                }}
+                className="bg-primary border border-primary cursor-pointer text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
+              >
+                <i className="fa-solid fa-bag-shopping" /> Add to cart
+              </div>
+            )}
             {/* <a
               href="#"
               className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"
