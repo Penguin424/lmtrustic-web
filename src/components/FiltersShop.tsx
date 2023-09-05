@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { ICategoryDB } from "../interfaces/category";
+import { useRouter } from "next/router";
 
 const FiltersShop = () => {
   const [categories, setCategories] = useState<ICategoryDB[]>([]);
+  const [categoriesParams, setCategoriesParams] = useState<string[]>([]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    for (const cat of categoriesParams) {
+      router.query[cat] = "true";
+      router.push({
+        pathname: "/shop",
+        query: router.query,
+      });
+    }
+  }, [categoriesParams]);
 
   const handleGetCategories = async () => {
     const reponseCatDB = await fetch(
@@ -410,6 +424,30 @@ const FiltersShop = () => {
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <input
+                      checked={Object.keys(router.query).includes(
+                        category.name
+                      )}
+                      onClick={(vale) => {
+                        if (vale.currentTarget.checked) {
+                          setCategoriesParams([
+                            ...categoriesParams,
+                            category.name,
+                          ]);
+                        } else {
+                          setCategoriesParams(
+                            categoriesParams.filter(
+                              (cat) => cat !== category.name
+                            )
+                          );
+
+                          delete router.query[category.name];
+
+                          router.push({
+                            pathname: "/shop",
+                            query: router.query,
+                          });
+                        }
+                      }}
                       type="checkbox"
                       name="cat-1"
                       id="cat-1"

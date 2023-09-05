@@ -3,11 +3,14 @@ import logonegro from "../assets/images/logo-azul.png";
 import Link from "next/link";
 import { GlobalContext } from "../context/GlobalContext";
 import { ICategoryDB } from "../interfaces/category";
+import { useRouter } from "next/router";
 
 const NavBar = ({ children }) => {
   const [categories, setCategories] = useState<ICategoryDB[]>([]);
 
-  const { shoppingCartItems } = useContext(GlobalContext);
+  const { shoppingCartItems, isLogged } = useContext(GlobalContext);
+
+  const router = useRouter();
 
   useEffect(() => {
     handleGetCategories();
@@ -30,9 +33,9 @@ const NavBar = ({ children }) => {
     <>
       <header className="py-4 shadow-sm bg-white">
         <div className="container flex items-center justify-between">
-          <a href="index.html">
+          <Link href="/">
             <img src={logonegro.src} alt="Logo" className="w-44" />
-          </a>
+          </Link>
 
           <div className="w-full max-w-xl relative flex">
             <span className="absolute left-4 top-3 text-lg text-gray-400">
@@ -50,34 +53,36 @@ const NavBar = ({ children }) => {
             </button>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/cart"
-              className="text-center text-gray-700 hover:text-primary transition relative"
-            >
-              {/* <div className="text-2xl">
+          {isLogged && (
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/cart"
+                className="text-center text-gray-700 hover:text-primary transition relative"
+              >
+                {/* <div className="text-2xl">
                 <i className="fa-regular fa-heart"></i>
               </div> */}
-              <div className="text-2xl">
-                <i className="fa-solid fa-bag-shopping"></i>
-              </div>
-              <div className="text-xs leading-3">Cart</div>
-              <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-                {shoppingCartItems
-                  .map((item) => item.amount)
-                  .reduce((a, b) => a + b, 0)}
-              </div>
-            </Link>
-            <a
-              href="#"
-              className="text-center text-gray-700 hover:text-primary transition relative"
-            >
-              <div className="text-2xl">
-                <i className="fa-regular fa-user"></i>
-              </div>
-              <div className="text-xs leading-3">Account</div>
-            </a>
-          </div>
+                <div className="text-2xl">
+                  <i className="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div className="text-xs leading-3">Cart</div>
+                <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
+                  {shoppingCartItems
+                    .map((item) => item.amount)
+                    .reduce((a, b) => a + b, 0)}
+                </div>
+              </Link>
+              <a
+                href="#"
+                className="text-center text-gray-700 hover:text-primary transition relative"
+              >
+                <div className="text-2xl">
+                  <i className="fa-regular fa-user"></i>
+                </div>
+                <div className="text-xs leading-3">Account</div>
+              </a>
+            </div>
+          )}
         </div>
       </header>
       <nav className="bg-gray-800">
@@ -93,8 +98,8 @@ const NavBar = ({ children }) => {
             <div className="absolute w-72 left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed opacity-0 group-hover:opacity-100 transition duration-300 invisible group-hover:visible">
               {categories.map((category) => {
                 return (
-                  <a
-                    href="#"
+                  <Link
+                    href={`/shop?${category.name}`}
                     className="flex items-center px-6 py-3 hover:bg-gray-100 transition"
                   >
                     <img
@@ -106,7 +111,7 @@ const NavBar = ({ children }) => {
                       {" "}
                       {category.name}{" "}
                     </span>
-                  </a>
+                  </Link>
                 );
               })}
             </div>
@@ -126,6 +131,18 @@ const NavBar = ({ children }) => {
               >
                 Shop
               </Link>
+              <Link
+                href="/contact"
+                className="text-gray-200 hover:text-white transition"
+              >
+                Contact
+              </Link>
+              {/* <Link
+                href="/lmt-dealer-form"
+                className="text-gray-200 hover:text-white transition"
+              >
+                Dealer Form
+              </Link> */}
               {/* <a href="#" className="text-gray-200 hover:text-white transition">
                 About us
               </a>

@@ -9,7 +9,7 @@ interface IPropsCardFurniture {
 }
 
 const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
-  const { setShoppingCartItems, shoppingCartItems, role } =
+  const { setShoppingCartItems, shoppingCartItems, role, isLogged } =
     useContext(GlobalContext);
 
   return (
@@ -37,9 +37,11 @@ const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
           </h4>
         </a>
         <div className="flex items-baseline mb-1 space-x-2">
-          <p className="text-xl text-primary font-semibold">
-            ${furniture[role.toLowerCase()]}
-          </p>
+          {isLogged && (
+            <p className="text-xl text-primary font-semibold">
+              ${furniture[role.toLowerCase()]}
+            </p>
+          )}
           {/* <p className="text-sm text-gray-400 line-through">$55.90</p> */}
         </div>
         <div className="flex items-center">
@@ -60,63 +62,69 @@ const CardFurniture = ({ furniture }: IPropsCardFurniture) => {
               <i className="fa-solid fa-star" />
             </span>
           </div>
-          <div className="text-xs text-gray-500 ml-3">({furniture.stock})</div>
+          {isLogged && (
+            <div className="text-xs text-gray-500 ml-3">
+              ({furniture.stock})
+            </div>
+          )}
         </div>
       </div>
-      <a
-        onClick={() => {
-          const isExist = shoppingCartItems.find(
-            (item) => item.furniter.id === furniture.id
-          );
+      {isLogged && (
+        <a
+          onClick={() => {
+            const isExist = shoppingCartItems.find(
+              (item) => item.furniter.id === furniture.id
+            );
 
-          if (isExist) {
-            if (isExist.furniter.stock < isExist.amount + 1) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Out of stock",
+            if (isExist) {
+              if (isExist.furniter.stock < isExist.amount + 1) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Out of stock",
+                });
+
+                return;
+              }
+
+              setShoppingCartItems((prev) => {
+                return prev.map((item) => {
+                  if (item.furniter.id === furniture.id) {
+                    return {
+                      ...item,
+                      amount: item.amount + 1,
+                    };
+                  } else {
+                    return item;
+                  }
+                });
               });
+            } else {
+              if (furniture.stock < 1) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Out of stock",
+                });
+                return;
+              }
 
-              return;
+              setShoppingCartItems((prev) => {
+                return [
+                  ...prev,
+                  {
+                    furniter: furniture,
+                    amount: 1,
+                  },
+                ];
+              });
             }
-
-            setShoppingCartItems((prev) => {
-              return prev.map((item) => {
-                if (item.furniter.id === furniture.id) {
-                  return {
-                    ...item,
-                    amount: item.amount + 1,
-                  };
-                } else {
-                  return item;
-                }
-              });
-            });
-          } else {
-            if (furniture.stock < 1) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Out of stock",
-              });
-              return;
-            }
-
-            setShoppingCartItems((prev) => {
-              return [
-                ...prev,
-                {
-                  furniter: furniture,
-                  amount: 1,
-                },
-              ];
-            });
-          }
-        }}
-        className="block w-full py-1 text-center cursor-pointer text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-      >
-        Add to cart
-      </a>
+          }}
+          className="block w-full py-1 text-center cursor-pointer text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+        >
+          Add to cart
+        </a>
+      )}
     </div>
   );
 };
