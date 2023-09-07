@@ -8,7 +8,8 @@ import { useRouter } from "next/router";
 const NavBar = ({ children }) => {
   const [categories, setCategories] = useState<ICategoryDB[]>([]);
 
-  const { shoppingCartItems, isLogged } = useContext(GlobalContext);
+  const { shoppingCartItems, isLogged, setIsLogged } =
+    useContext(GlobalContext);
 
   const router = useRouter();
 
@@ -150,12 +151,26 @@ const NavBar = ({ children }) => {
                 Contact us
               </a> */}
             </div>
-            <Link
-              href="/login"
-              className="text-gray-200 hover:text-white transition"
-            >
-              Login
-            </Link>
+            {isLogged ? (
+              <Link
+                href="/"
+                className="text-gray-200 hover:text-white transition"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLogged(false);
+                  router.push("/");
+                }}
+              >
+                Logout
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="text-gray-200 hover:text-white transition"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </nav>

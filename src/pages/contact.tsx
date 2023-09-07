@@ -111,7 +111,6 @@ const contact = () => {
                 length: 16,
                 numbers: true,
               });
-
               await fetch(
                 "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/auth/local/register",
                 {
@@ -126,23 +125,30 @@ const contact = () => {
                     pass: password,
                     message: `${e.nombre} ${e.apellido} \n${e.mensaje}`,
                     phone: e.telefono,
-                    company: e.companyname,
-                    street: e.Street,
-                    city: e.City,
-                    state: e.State,
-                    zip: e.Zip,
-                    taxid: e.taxid,
-                    typeofbusiness: e.typeofbusiness,
                   }),
                 }
               );
+
+              await fetch("api/hello", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  username: e.email.split("@")[0],
+                  email: e.email,
+                  password: "password",
+                  pass: "password",
+                  message: `${e.nombre} ${e.apellido} \n${e.mensaje}`,
+                  phone: e.telefono,
+                }),
+              });
 
               await Swal.fire({
                 icon: "success",
                 title: "Tanks for contact us",
                 text: "We will contact you soon",
               });
-
               form.resetFields();
             } catch (error) {
               await Swal.fire({

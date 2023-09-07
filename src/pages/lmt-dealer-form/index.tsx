@@ -143,6 +143,21 @@ const index = () => {
                       }
                     );
 
+                    await fetch("api/hello", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        username: e.email.split("@")[0],
+                        email: e.email,
+                        password: "password",
+                        pass: "password",
+                        message: `${e.nombre} ${e.apellido} \n${e.mensaje}`,
+                        phone: e.telefono,
+                      }),
+                    });
+
                     await Swal.fire({
                       icon: "success",
                       title: "Tanks for contact us",

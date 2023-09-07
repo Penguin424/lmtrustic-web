@@ -16,7 +16,7 @@ const FurnitureDetail = () => {
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
-      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images",
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&filters[$and][0][inventory][name][$eq]=Tonala",
       {
         method: "GET",
       }
@@ -31,7 +31,7 @@ const FurnitureDetail = () => {
     const id = params.query.sku.toString().split(".")[1];
 
     const reponseFurDB = await fetch(
-      `https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures/${id}?populate[0]=images`,
+      `https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures/${id}?populate[0]=images&filters[$and][0][inventory][name][$eq]=Tonala`,
       {
         method: "GET",
       }

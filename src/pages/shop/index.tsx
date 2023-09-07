@@ -15,7 +15,7 @@ const index = () => {
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
-      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&populate[1]=categories",
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&populate[1]=categories&filters[$and][0][inventory][name][$eq]=Tonala",
       {
         method: "GET",
       }
