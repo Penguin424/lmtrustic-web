@@ -73,15 +73,15 @@ const NavBar = ({ children }) => {
                     .reduce((a, b) => a + b, 0)}
                 </div>
               </Link>
-              <a
-                href="#"
+              <Link
+                href="/account"
                 className="text-center text-gray-700 hover:text-primary transition relative"
               >
                 <div className="text-2xl">
                   <i className="fa-regular fa-user"></i>
                 </div>
                 <div className="text-xs leading-3">Account</div>
-              </a>
+              </Link>
             </div>
           )}
         </div>
