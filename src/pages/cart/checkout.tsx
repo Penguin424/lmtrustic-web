@@ -167,7 +167,7 @@ const checkout = () => {
                   .reduce((a, b) => a + b, 0),
                 saledetails: salesDetails,
                 datedelivery: new Date().toISOString(),
-                status: "paying",
+                status: "confirmed",
               },
             }),
           }
