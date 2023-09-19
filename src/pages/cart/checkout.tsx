@@ -168,6 +168,7 @@ const checkout = () => {
                 saledetails: salesDetails,
                 datedelivery: new Date().toISOString(),
                 status: "confirmed",
+                type: "WEB",
               },
             }),
           }
