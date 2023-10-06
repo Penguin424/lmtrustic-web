@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleGetFurnitures = async () => {
     const reponseFurDB = await fetch(
-      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&filters[$and][0][inventory][name][$eq]=Tonala",
+      "https://lmtrustic-backend-b50f8f037af7.herokuapp.com/api/furnitures?populate[0]=images&filters[$and][0][inventory][name][$eq]=Tonala&pagination[limit]=8",
       {
         method: "GET",
       }
